@@ -6,7 +6,10 @@ Given('I am on the retirement calculator page', async () => {
     await browser.url('https://www.securian.com/insights-tools/retirement-calculator.html');
     await browser.pause(3000);
     console.log(' Page loaded successfully.');
+
+     await retirementCalculatorPage.closeCookieBannerIfPresent();
 });
+
 
 When(/^I enter current age as "([^"]*)"$/, async (age) => {
     console.log(` Entering current age: ${age}`);
@@ -93,9 +96,15 @@ Then('I should see the results section', async () => {
 });
 
 Then('I should see and log the result value', async () => {
-    const expectedValue = ' $5,621 ';
-    console.log(`\n Expected Retirement Result: ${expectedValue}`);
+    const result = await retirementCalculatorPage.getMainResultText();
+
+    if (result) {
+        console.log(` Final calculated result is: ${result}`);
+    } else {
+        throw new Error(' Result value not displayed after waiting');
+    }
 });
+
 
 
 

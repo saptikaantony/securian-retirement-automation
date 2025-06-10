@@ -29,25 +29,37 @@ class CalculatorPage {
             await label.click();
         }
     }
+    async closeCookieBannerIfPresent() {
+    try {
+        const closeBtn = await $('//*[@id="onetrust-close-btn-container"]/button');
 
-    async waitForPageResultText(expectedText) {
-    // Retry up to 10 seconds
-    const timeout = 10000;
-    const start = Date.now();
-
-    while (Date.now() - start < timeout) {
-        const pageSource = await browser.getPageSource();
-
-        if (pageSource.includes(expectedText)) {
-            console.log('\n Found expected result in page: ' + expectedText);
-            return;
+        if (await closeBtn.isDisplayed()) {
+            console.log('Cookie popup detected. Attempting to close...');
+            await closeBtn.click();
+            console.log('Cookie popup closed.');
+        } else {
+            console.log('Cookie popup not displayed.');
         }
-
-        await browser.pause(500); // Wait before next try
+    } catch (error) {
+        console.warn('Error while trying to close cookie popup:', error.message);
     }
-
-    throw new Error(` Result text "${expectedText}" not found in page after ${timeout}ms`);
 }
+
+
+
+    async getMainResultText() {
+    try {
+        const resultElement = await $('//*[@id="result-message"]/strong');
+        await resultElement.waitForDisplayed({ timeout: 10000 });
+        const resultText = await resultElement.getText();
+        console.log(' Retirement result found:', resultText);
+        return resultText;
+    } catch (error) {
+        console.error(' Could not find retirement result:', error.message);
+        return null;
+    }
+}
+
 
 }
 
