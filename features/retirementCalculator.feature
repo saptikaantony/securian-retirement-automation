@@ -1,14 +1,20 @@
-Feature: Calculate retirement savings
+Feature: Retirement Calculator
 
-  Scenario: Fill out form and view results
+  Background:
     Given I am on the retirement calculator page
-    When I enter current age as "40"
-    And I enter retirement age as "65"
-    And I enter current income as "100000"
-    And I enter spouse income as "50000"
-    And I enter current savings as "20000"
-    And I enter annual savings as "10000"
-    And I enter savings increase rate as "5"
-    And I click on the Calculate button
-    Then I should see the results section
-    And I should see and log the result value
+
+  Scenario: Calculate retirement amount with valid inputs
+  When I fill out the retirement form with the following data:
+  | currentAge             | 35       |
+  | retirementAge          | 65       |
+  | currentIncome          | 90000    |
+  | spouseIncome           | 50000    |
+  | currentSavings         | 20000    |
+  | annualSavings          | 100   |
+  | savingsIncreaseRate    | 2        |
+  | socialSecurity         | Yes      |
+  | maritalStatus          | Married  |
+  | socialSecurityOverride | 1500     |
+
+
+    Then I should see the result displayed
